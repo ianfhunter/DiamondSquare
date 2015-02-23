@@ -6,6 +6,13 @@ from utils import *
 from constants import *
 import sys
 
+##
+#
+#   Options - Positive increments only (hill)
+#
+#
+##
+
 #validate amount
 if (grid_size-1 & (grid_size - 2)) != 0:
     sys.exit("Invalid Number. Must be power of 2 +1")
@@ -22,41 +29,49 @@ def MaxMinKeys(d):
      k=list(d.keys())
      return (k[v.index(max(v))],k[v.index(min(v))])
 
-def DSFractal(grid,depth):
+#x,y - position in main grid
+def DSFractal(main,x,y,grid,depth,mx,my):
     # print "Grid of size ", len(grid), "x", len(grid[0])
     depth = depth + 1
 
+    print "main"
+    pp.pprint(main)
     square(grid)
-    diamond(grid)
+    diamond(main,x,y,grid)
+
+    print "applied"
+    pp.pprint(grid)
+
     minis = subgrid(grid)
 
-    if depth == 1:
-        pp.pprint(grid)
+    half = len(grid)/2
+
+    #
+    #   1  2
+    #   3  4
+    #
     if len(minis[0][0]) > 2 and len(minis[0]) > 2 :
-        insert(DSFractal(minis[0],depth),grid,0,0)
-    if depth == 1:
-        pp.pprint(grid)
+        insert(grid,main,mx,my)
+        insert(DSFractal(main,x,y,minis[0],depth,mx,my),grid,0,0)
     
     if len(minis[1][0]) > 2 and len(minis[1]) > 2 :
-        insert(DSFractal(minis[1],depth),grid,len(grid)/2,0)
+        insert(grid,main,mx,my)
+        insert(DSFractal(main,(half)+x,y,minis[1],depth,mx+(half),my),grid,half,0)       
 
     if len(minis[2][0]) > 2 and len(minis[2]) > 2 :
-        insert(DSFractal(minis[2],depth),grid,0,len(grid[0])/2)
+        insert(grid,main,mx,my)
+        insert(DSFractal(main,x,(half)+y,minis[2],depth,mx,my+(half)),grid,0,half) 
 
     if len(minis[3][0]) > 2 and len(minis[3]) > 2 :
-       insert(DSFractal(minis[3],depth),grid,len(grid)/2,len(grid[0])/2)
-    #pp.pprint(grid)
+        insert(grid,main,mx,my)
+        insert(DSFractal(main,(half)+x,(half)+y,minis[3],depth,mx+(half),my+(half)),grid,half,half)
+    
+
     return grid
 
 
 
 grid = [[0 for x in range(grid_size)] for x in range(grid_size)] 
-
-#Random Heights for corners
-# grid[0][0] = randint(1,initial_step)
-# grid[0][len(grid)-1] = randint(1,initial_step)
-# grid[len(grid)-1][0] = randint(1,initial_step)
-# grid[len(grid)-1][len(grid)-1] = randint(1,initial_step)
 
 grid[0][0] = max_height /2
 grid[0][len(grid)-1] =  max_height /2
@@ -64,9 +79,9 @@ grid[len(grid)-1][0] =  max_height /2
 grid[len(grid)-1][len(grid)-1] = max_height /2 
 
 
-DSFractal(grid,depth)
+DSFractal(grid,0,0,grid,depth,0,0)
 
-#pp.pprint(grid)
+# pp.pprint(grid)
 
 ################ DISPLAY
 

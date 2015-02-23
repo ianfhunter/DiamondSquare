@@ -14,6 +14,14 @@ def get_corners(grid):
         len(grid)-1,len(grid[0])-1
         )
 
+def offset(gridsize):
+    if landscape_type == 0:
+        val = randint(0,roughness * gridsize) 
+    else:
+        val = randint(-roughness * gridsize,roughness * gridsize) 
+    #print val
+    return val
+
 def square(grid):
     global square_step_amount
     global roughness
@@ -28,48 +36,100 @@ def square(grid):
     #Assign mean + random
     mean = (grid[x1][y1] + grid[x2][y2] + grid[x3][y3] + grid[x4][y4]) / 4
 
-    grid[mid_x][mid_y] = mean + randint(0,roughness * len(grid)) 
+    grid[mid_x][mid_y] = mean + offset(len(grid))
 
     return
 
-def diamond(grid):
-    global diamond_step_amount
+#Gets the average of 4 points, excluding zero value items
+def average(a,b,c,d,main):
+    total = 0
+    count = 0
+    if a is not None:
+        x = main[a[0]][a[1]]
+        # print x
+        if x != 0:
+            total = total + x
+            count = count + 1
+    if b is not None:
+        x = main[b[0]][b[1]]
+        # print x
+        if x != 0:
+            total = total + x
+            count = count + 1
+    if c is not None:
+        x = main[c[0]][c[1]]
+        # print x
+        if x != 0:
+            total = total + x
+            count = count + 1
+    if d is not None:
+        x = main[d[0]][d[1]]  
+        # print x
+        if x != 0:
+            total = total + x 
+            count = count + 1
+
+    # print "average: ", (total/count)
+    return total/count
+
+def diamond(main,gx,gy,grid):
     global roughness
-    x1,y1,x2,y2,x3,y3,x4,y4 = get_corners(grid)
-
-    #get midpoints
-    half_x = ((x2-x1) / 2 ) + x1
-    half_y = ((y3-x1) / 2 ) + y1 
-
-    left = (half_x , y3)
-    right = (half_x, y1)
-    top = (x1, half_y)
-    bottom = (x2, half_y) 
-
+    
+    last = len(grid)-1  #last grid index
+    half = last / 2         #midpoint
 
     #Assign mean + random
-    mean = (grid[x1][y1] + grid[x2][y2] + grid[x3][y3] + grid[x4][y4]) / 4
 
+    #top
+    #
+    #      a
+    #    b O c
+    #  e O d O f
+    #    g O h
+    #      i
 
-    grid[top[0]][top[1]] = mean + randint(0,roughness * len(grid)) 
-    grid[left[0]][left[1]] = mean + randint(0,roughness * len(grid)) 
-    grid[right[0]][right[1]] = mean + randint(0,roughness * len(grid)) 
-    grid[bottom[0]][bottom[1]] = mean + randint(0,roughness * len(grid)) 
+    #surrounding corners
+    b = (gx,gy)
+    c = (gx + last, gy)
+    g = (gx, gy + last)
+    h = (gx + last, gy + last)
 
+    #midpoint
+    d = (gx+half,gy+half)
+
+    #extreme corners
+    a = (gx + half, gy - half) if gy - half >= 0 else None
+    e = (gx - half, gy + half) if gx - half >= 0 else None
+    f = (gx + last + half, gy + half) if gx + last + half < len(main) else None
+    i = (gx + half, gy + last + half) if gy + last + half < len(main) else None
+
+    print a,b,c,d,e,f,g,h,i
+
+    #averages
+    top = average(a,b,c,d,main)
+    left = average(b,e,d,g,main)
+    right = average(c,d,f,h,main)
+    bottom = average(d,g,h,i,main)
+
+    #assign values
+    grid[half][0] = top + offset(len(grid))
+    grid[0][half] = left + offset(len(grid))
+    grid[last][half] = right + offset(len(grid))
+    grid[half][last] = bottom + offset(len(grid))
 
 def subgrid(grid):
     x1,y1,x2,y2,x3,y3,x4,y4 = get_corners(grid)
 
     upper_left_grid =grid[:y3/2+1] #Halved on one dimension
-    upper_right_grid = grid[:y3/2+1]
+    lower_left_grid = grid[:y3/2+1]
     for idx,row in enumerate(upper_left_grid):
         upper_left_grid[idx] = row[:(x2/2)+1]  #Halved on the second dimension
-        upper_right_grid[idx] = row[x2/2:]  #Halved on the second dimension
+        lower_left_grid[idx] = row[x2/2:]  #Halved on the second dimension
 
-    lower_left_grid =grid[y3/2:] #Halved on one dimension
+    upper_right_grid =grid[y3/2:] #Halved on one dimension
     lower_right_grid = grid[y3/2:]
-    for idx,row in enumerate(lower_left_grid):
-        lower_left_grid[idx] = row[:(x2/2)+1]  #Halved on the second dimension
+    for idx,row in enumerate(upper_right_grid):
+        upper_right_grid[idx] = row[:(x2/2)+1]  #Halved on the second dimension
         lower_right_grid[idx] = row[x2/2:]  #Halved on the second dimension
 
     return (upper_left_grid,upper_right_grid,lower_left_grid,lower_right_grid)
