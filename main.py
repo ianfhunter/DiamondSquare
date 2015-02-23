@@ -34,13 +34,13 @@ def DSFractal(main,x,y,grid,depth,mx,my):
     # print "Grid of size ", len(grid), "x", len(grid[0])
     depth = depth + 1
 
-    print "main"
-    pp.pprint(main)
+    # print "main"
+    # pp.pprint(main)
     square(grid)
     diamond(main,x,y,grid)
 
-    print "applied"
-    pp.pprint(grid)
+    # print "applied"
+    # pp.pprint(grid)
 
     minis = subgrid(grid)
 

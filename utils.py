@@ -103,7 +103,7 @@ def diamond(main,gx,gy,grid):
     f = (gx + last + half, gy + half) if gx + last + half < len(main) else None
     i = (gx + half, gy + last + half) if gy + last + half < len(main) else None
 
-    print a,b,c,d,e,f,g,h,i
+    #print a,b,c,d,e,f,g,h,i
 
     #averages
     top = average(a,b,c,d,main)
