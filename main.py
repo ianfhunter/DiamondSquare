@@ -46,10 +46,10 @@ pp = pprint.PrettyPrinter(indent=4)
 grid = [[0 for x in range(grid_size)] for x in range(grid_size)]   
 
 #set corners to half height
-grid[0][0] = max_height /2
-grid[0][len(grid)-1] =  max_height /2
-grid[len(grid)-1][0] =  max_height /2
-grid[len(grid)-1][len(grid)-1] = max_height /2 
+grid[0][0] = initial_height
+grid[0][len(grid)-1] = initial_height
+grid[len(grid)-1][0] = initial_height
+grid[len(grid)-1][len(grid)-1] = initial_height
 
 
 DSFractal(grid,0,0,grid)

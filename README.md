@@ -16,13 +16,13 @@ Code is completely my own, apart from external libraries. Feel free to reuse (wi
 
 Only tested on Windows.
 
+For future improvement ideas, see the issues list
+
 **Example output:**
 
 ![Pygame 2d output](http://i.imgur.com/e3Cdv3n.png)
 ![Matplotlib 3d output](http://i.imgur.com/W4P58lT.png)
 ![graph3d output (linked)](http://i.imgur.com/TZwACMN.png)
-
-
 
 View output in browser:
 http://almende.github.io/chap-links-library/js/graph3d/playground/
