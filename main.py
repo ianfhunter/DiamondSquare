@@ -1,10 +1,8 @@
-import pygame, sys
+import pygame, sys,pprint
 from random import randint
-import pprint
 from pygame.locals import *
 from utils import *
 from constants import *
-import sys
 
 #validate input size.
 if (grid_size-1 & (grid_size - 2)) != 0:
@@ -12,12 +10,10 @@ if (grid_size-1 & (grid_size - 2)) != 0:
 
 pp = pprint.PrettyPrinter(indent=4)
 
-def MaxMinKeys(d):
-     """ a) create a list of the dict's keys and values; 
-         b) return the key with the max value"""  
+def MaxMinValues(d):
+     #Returns max and min values from a dictionary
      v=list(d.values())
-     k=list(d.keys())
-     return (k[v.index(max(v))],k[v.index(min(v))])
+     return (max(v),min(v))
 
 #x,y - position in main grid
 def DSFractal(main,x,y,grid,mx,my):
@@ -87,43 +83,35 @@ if output_type == 1:
 
     # Heatmap 
 
-    #get colour list
+    #setup dictionary
     items = {}
     for col,column in enumerate(grid):
         for row,item in enumerate(column):
-            #if not item in items:
-                #items[item] = item
-            items[item] = item #+ 1
-
-    print grid
-    print items
+            items[item] = item 
 
     # Find max numbers & convert to a 0-1 scale
-    ma,mi = MaxMinKeys(items)
-    ma = items[ma]
-    mi = items[mi]
+    ma,mi = MaxMinValues(items)
     span = ma - mi
     for x in items:
-        #print items[x]
-        print "x", x
-        print items[x]
-        print mi,ma
-        items[x] = (((items[x] - mi) * 765) / span)
+        #associated new value
+        items[x] = (((items[x] - mi) * 1020) / span)         #765 is the range of colours we want to represent.
 
-    print items
 
-    screen = pygame.display.set_mode((SCREENX, SCREENY))
-    pygame.display.set_caption('Overhead View')
-    while True: # main game loop
+    #pygame setup
+    screen = pygame.display.set_mode((SCREENX, SCREENY))    #display
+    pygame.display.set_caption('Overhead View')             #window
+    while True:                                             # main display loop
         for col,column in enumerate(grid):
             for row,item in enumerate(column):
-                val = items[item]
+                val = items[item]                           #Get heat value
                 if val <= 255:
-                    pygame.draw.rect(screen, (0,val,255), (x_bit*row,y_bit*col, x_bit, y_bit))
+                    pygame.draw.rect(screen, (0,val,255), (x_bit*row,y_bit*col, x_bit, y_bit))  #blue -> cyan
                 elif val <= 510:
-                    pygame.draw.rect(screen, (0,255,val-255), (x_bit*row,y_bit*col, x_bit, y_bit))
+                    pygame.draw.rect(screen, (0,255,val-255), (x_bit*row,y_bit*col, x_bit, y_bit))  #cyan -> green
                 elif val <= 765:    
-                    pygame.draw.rect(screen, (255,val-510,0), (x_bit*row,y_bit*col, x_bit, y_bit))
+                    pygame.draw.rect(screen, (val-510,255,0), (x_bit*row,y_bit*col, x_bit, y_bit))  #green -> yellow
+                elif val <= 1020:    
+                    pygame.draw.rect(screen, (255,val-765,0), (x_bit*row,y_bit*col, x_bit, y_bit))  #yellow -> red
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()

@@ -9,4 +9,4 @@ landscape_type = 1  #0 for hill , anything else for landscape
 # 0 = csv coordinates (x,y,z)
 # 1 = 2D
 # 2 = 3D
-output_type = 2
+output_type = 1
