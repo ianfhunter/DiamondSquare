@@ -1,19 +1,8 @@
-import pygame, sys,pprint
+import sys,pprint
 from random import randint
-from pygame.locals import *
 from utils import *
 from constants import *
 
-#validate input size.
-if (grid_size-1 & (grid_size - 2)) != 0:
-    sys.exit("Invalid Number. Must be (2^n)+1 ")
-
-pp = pprint.PrettyPrinter(indent=4)
-
-def MaxMinValues(d):
-     #Returns max and min values from a dictionary
-     v=list(d.values())
-     return (max(v),min(v))
 
 #x,y - position in main grid
 def DSFractal(main,x,y,grid,mx,my):
@@ -25,23 +14,23 @@ def DSFractal(main,x,y,grid,mx,my):
 
     half = len(grid)/2
 
-    #
+    # Order of recursion
     #   1  2
     #   3  4
     #
-    if len(minis[0][0]) > 2 and len(minis[0]) > 2 :
+    if len(minis[0]) > 2 :
         insert(grid,main,mx,my)
         insert(DSFractal(main,x,y,minis[0],mx,my),grid,0,0)
     
-    if len(minis[1][0]) > 2 and len(minis[1]) > 2 :
+    if len(minis[1]) > 2 :
         insert(grid,main,mx,my)
         insert(DSFractal(main,(half)+x,y,minis[1],mx+(half),my),grid,half,0)       
 
-    if len(minis[2][0]) > 2 and len(minis[2]) > 2 :
+    if len(minis[2]) > 2 :
         insert(grid,main,mx,my)
         insert(DSFractal(main,x,(half)+y,minis[2],mx,my+(half)),grid,0,half) 
 
-    if len(minis[3][0]) > 2 and len(minis[3]) > 2 :
+    if len(minis[3]) > 2 :
         insert(grid,main,mx,my)
         insert(DSFractal(main,(half)+x,(half)+y,minis[3],mx+(half),my+(half)),grid,half,half)   
 
@@ -49,8 +38,16 @@ def DSFractal(main,x,y,grid,mx,my):
 
 
 
-grid = [[0 for x in range(grid_size)] for x in range(grid_size)] 
+# Validate size of grid
+if (grid_size-1 & (grid_size - 2)) != 0:
+    sys.exit("Invalid Number. Must be (2^n)+1 ")
 
+pp = pprint.PrettyPrinter(indent=4)
+
+#init 2d array with 0s
+grid = [[0 for x in range(grid_size)] for x in range(grid_size)]   
+
+#set corners to half height
 grid[0][0] = max_height /2
 grid[0][len(grid)-1] =  max_height /2
 grid[len(grid)-1][0] =  max_height /2
@@ -60,20 +57,20 @@ grid[len(grid)-1][len(grid)-1] = max_height /2
 DSFractal(grid,0,0,grid,0,0)
 
 
-################ DISPLAY
+################ DISPLAY #################
 
-
-
-
+#CSV Output
 if output_type == 0:
     print '"x"',",",'"y"',",",'"value"'         #column headers
     for col,column in enumerate(grid):
         for row,item in enumerate(column):
             print col, ",",row,",",item
 
-
-
+#2D Representation
 if output_type == 1:
+    import pygame
+    from pygame.locals import *
+
     pygame.init()
     SCREENX = 800
     SCREENY = 800
@@ -83,11 +80,11 @@ if output_type == 1:
 
     # Heatmap 
 
-    #setup dictionary
+    #setup dictionary (value:colorrange value)
     items = {}
     for col,column in enumerate(grid):
         for row,item in enumerate(column):
-            items[item] = item 
+            items[item] = item #non zero value
 
     # Find max numbers & convert to a 0-1 scale
     ma,mi = MaxMinValues(items)
@@ -122,7 +119,7 @@ if output_type == 1:
                     sys.exit()
         pygame.display.update()
 
-
+#3D Representation
 if output_type == 2:
     import numpy
     import matplotlib.pyplot as plt
