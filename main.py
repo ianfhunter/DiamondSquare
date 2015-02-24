@@ -111,27 +111,50 @@ for x in items:
     items[x] = (((items[x] - mi) * 765) / span)
 
 
-print '"x"',",",'"y"',",",'"value"'
-for col,column in enumerate(grid):
-    for row,item in enumerate(column):
-        print col, ",",row,",",item
+
+# print '"x"',",",'"y"',",",'"value"'
+# for col,column in enumerate(grid):
+#     for row,item in enumerate(column):
+#         print col, ",",row,",",item
 
 
-screen = pygame.display.set_mode((SCREENX, SCREENY))
-pygame.display.set_caption('Hello World!')
-while True: # main game loop
-    for col,column in enumerate(grid):
-        for row,item in enumerate(column):
-            val = items[item]
-            if val <= 255:
-                pygame.draw.rect(screen, (0,val,255), (x_bit*row,y_bit*col, x_bit, y_bit))
-            elif val <= 510:
-                pygame.draw.rect(screen, (0,255,val-255), (x_bit*row,y_bit*col, x_bit, y_bit))
-            elif val <= 765:    
-                pygame.draw.rect(screen, (255,val-510,0), (x_bit*row,y_bit*col, x_bit, y_bit))
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-    pygame.display.update()
+
+print "done"
+
+import numpy
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+# Set up grid and test data
+nx, ny = 256, 1024
+x = range(len(grid))
+y = range(len(grid))
+
+data = numpy.array(grid)
+
+hf = plt.figure()
+ha = hf.add_subplot(111, projection='3d')
+
+X, Y = numpy.meshgrid(x, y)  # `plot_surface` expects `x` and `y` data to be 2D
+ha.plot_surface(X, Y, data,shade=True,cmap=cm.terrain,rstride=1, cstride=1,)
+
+plt.show()
+
+# screen = pygame.display.set_mode((SCREENX, SCREENY))
+# pygame.display.set_caption('Hello World!')
+# while True: # main game loop
+#     for col,column in enumerate(grid):
+#         for row,item in enumerate(column):
+#             val = items[item]
+#             if val <= 255:
+#                 pygame.draw.rect(screen, (0,val,255), (x_bit*row,y_bit*col, x_bit, y_bit))
+#             elif val <= 510:
+#                 pygame.draw.rect(screen, (0,255,val-255), (x_bit*row,y_bit*col, x_bit, y_bit))
+#             elif val <= 765:    
+#                 pygame.draw.rect(screen, (255,val-510,0), (x_bit*row,y_bit*col, x_bit, y_bit))
+#     for event in pygame.event.get():
+#         if event.type == QUIT:
+#             pygame.quit()
+#             sys.exit()
+#     pygame.display.update()
 
