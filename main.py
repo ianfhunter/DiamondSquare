@@ -116,6 +116,10 @@ if output_type == 1:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
         pygame.display.update()
 
 
