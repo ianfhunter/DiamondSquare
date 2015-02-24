@@ -14,6 +14,8 @@ Code is completely my own, apart from external libraries. Feel free to reuse (wi
 * Matplotlib
 (I plan to make these optional at some stage)
 
+Only tested on Windows.
+
 **Example output:**
 
 ![Pygame 2d output](http://i.imgur.com/e3Cdv3n.png)
