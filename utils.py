@@ -202,7 +202,7 @@ def display(choice,grid):
             pygame.display.update()
 
     #3D Representation
-    if choice == 2:
+    elif choice == 2:
         import numpy
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d import Axes3D
